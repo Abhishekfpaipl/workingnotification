@@ -11,17 +11,17 @@
                 <p class="mt-2 m-0 fw-bold icon">Fabricator</p>
             </div>
         </div>
-        <div class="container d-flex flex-column align-items-center justify-content-center col-md-6 bg-light pt-2">
-            <p class="fs-5">Login Your Account </p>
+        <div class="container d-flex flex-column justify-content-center col-md-6 bg-light pt-2">
+            <p class="d-flex justify-content-center fs-5">Login Your Account </p>
 
             <form @submit.prevent="loginAccount()">
-                <div class="w-100 p-2 form-floating container">
+                <div class="w-100 p-2 form-floating">
                     <input type="email" class="form-control" id="floatingInput" placeholder="Email" v-model="email"
                         required>
                     <label for="floatingInput" class="text-muted">Enter your Email</label>
                 </div>
 
-                <div class="w-100 p-2 form-floating container">
+                <div class="w-100 p-2 form-floating">
                     <input type="password" class="form-control" id="floatingInput2" placeholder="Password"
                         v-model="password" required>
                     <label for="floatingInput2" class="text-muted">Password</label>

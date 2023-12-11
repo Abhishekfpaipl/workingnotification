@@ -12,34 +12,29 @@
                 <p class="mt-2 m-0 fw-bold icon">Fabricator</p>
             </div>
         </div>
-        <div class="col-md-6 d-flex flex-column justify-content-center align-items-center pt-2">
-            <p class="text-cetner fs-5">Register Your Account </p>
+        <div class="col-md-6 d-flex flex-column justify-content-center pt-2">
+            <p class="d-flex justify-content-center fs-5 px-2">Register Your Account </p>
             <form @submit.prevent="registerUser()">
-                <div class="container">
-                    <div class="w-100 p-2 form-floating">
-                        <input type="text" class="form-control" id="floatingInput" placeholder="Email" v-model="name">
-                        <label for="floatingInput" class="text-muted">Enter your Name</label>
-                    </div>
-                    <div class="w-100 p-2 form-floating">
-                        <input type="email" class="form-control" id="floatingInput2" placeholder="Email" v-model="email">
-                        <label for="floatingInput2" class="text-muted">Enter your Email</label>
-                    </div>
-                    <div class="w-100 p-2 form-floating">
-                        <input type="password" class="form-control" id="floatingInput3" placeholder="Email"
-                            v-model="password">
-                        <label for="floatingInput3" class="text-muted">Password</label>
-                    </div>
-                    <div class="w-100 p-2 form-floating">
-                        <input type="password" class="form-control" id="floatingInput4" placeholder="Email"
-                            v-model="confirmPassword">
-                        <label for="floatingInput4" class="text-muted">Confirm Password</label>
-                    </div>
-                    <div class="p-2">
-                        <!-- <router-link to="/email-verification-page"> -->
-                        <button class="btn text-white w-100 fs-5" type="submit"
-                            style="padding: 10px 12px;background: linear-gradient(113deg, #1FAB89 31%, #28CC9E 97%);">Submit</button>
-                        <!-- </router-link> -->
-                    </div>
+                <div class="w-100 p-2 form-floating">
+                    <input type="text" class="form-control" id="floatingInput" placeholder="Email" v-model="name">
+                    <label for="floatingInput" class="text-muted">Enter your Name</label>
+                </div>
+                <div class="w-100 p-2 form-floating">
+                    <input type="email" class="form-control" id="floatingInput2" placeholder="Email" v-model="email">
+                    <label for="floatingInput2" class="text-muted">Enter your Email</label>
+                </div>
+                <div class="w-100 p-2 form-floating">
+                    <input type="password" class="form-control" id="floatingInput3" placeholder="Email" v-model="password">
+                    <label for="floatingInput3" class="text-muted">Password</label>
+                </div>
+                <div class="w-100 p-2 form-floating">
+                    <input type="password" class="form-control" id="floatingInput4" placeholder="Email"
+                        v-model="confirmPassword">
+                    <label for="floatingInput4" class="text-muted">Confirm Password</label>
+                </div>
+                <div class="p-2">
+                    <button class="btn text-white w-100 fs-5" type="submit"
+                        style="padding: 10px 12px;background: linear-gradient(113deg, #1FAB89 31%, #28CC9E 97%);">Submit</button>
                 </div>
             </form>
             <div class="text-center mt-2">
@@ -85,10 +80,14 @@ export default {
                 password: this.password,
                 password_confirmation: this.confirmPassword
             }).then((response) => {
-                console.log('data sent', response)
+                this.name = '';
+                this.email = '';
+                this.password = '';
+                this.confirmPassword = '';
+                console.log('data sent', response);
                 const token = response.data.token;
                 localStorage.setItem('token', token);
-                console.log('login succesful token stored', token)
+                console.log('login successful token stored', token);
             }).catch((error) => {
                 console.log('error', error)
             })
@@ -99,7 +98,7 @@ export default {
 </script>
 <style scoped>
 .icon {
-    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', 'Geneva', 'Verdana', 'sans-serif';
     font-size: 2rem;
     /* background: linear-gradient(113deg, #1FAB89 31%, #28CC9E 97%); */
     color: white;

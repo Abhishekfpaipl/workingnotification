@@ -16,6 +16,11 @@ const routes = [
     path:"/registration",
     name:"RegistrationPage",
     component:()=>import('@/views/RegistrationPage.vue')
+  },
+  {
+    path:"/offline",
+    name:"offline",
+    component:()=>import('@/views/OfflinePage.vue')
   }
 
 ];

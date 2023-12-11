@@ -41,4 +41,14 @@ self.addEventListener('notificationclick', function (event) {
     );
 });
 
+self.addEventListener('fetch', (event) => {
+    event.respondWith(
+        // Try to fetch the requested resource
+        fetch(event.request).catch(() => {
+            // If fetching fails (offline), redirect to the offline page
+            return caches.match('/offline');
+        })
+    );
+});
+
 
