@@ -40,15 +40,33 @@ self.addEventListener('notificationclick', function (event) {
         })
     );
 });
-
 self.addEventListener('fetch', (event) => {
-    event.respondWith(
-        // Try to fetch the requested resource
-        fetch(event.request).catch(() => {
-            // If fetching fails (offline), redirect to the offline page
-            return caches.match('/offline');
-        })
-    );
+    console.log('hello'),
+        event.respondWith(
+            // Try to fetch the request from the network
+            fetch(event.request).then(function (response) {
+                console.log('inside fetch in service worker', event.request)
+                // If successful, clone the response and cache it
+                if (response.status === 200) {
+                    var responseToCache = response.clone();
+                    caches.open('my-new').then(function (cache) {
+                        cache.add(event.request, responseToCache);
+                    });
+                }
+                return response;
+            }).catch(async (error) => {
+                console.log(error);
+                // If the network request fails, try to get it from the cache
+                const cachedResponse = await caches.match(event.request);
+                // If the resource is in the cache, return it
+                if (cachedResponse) {
+                    return cachedResponse;
+                } else if (event.request.mode === 'navigate') {
+                    // If the request is a navigation request, serve the custom offline page
+                    return caches.match('/views/OfflinePage.vue');
+                }
+            })
+        );
 });
 
 

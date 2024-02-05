@@ -2,7 +2,8 @@
 <template>
     <div>
         <h1>Offline</h1>
-        <p>You are currently offline. Please check your internet connection.</p>
+        <p>Try connecting to the internet or try again later..</p>
+        
     </div>
 </template>
   

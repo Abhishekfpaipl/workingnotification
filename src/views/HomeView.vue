@@ -4,8 +4,8 @@
     <div v-if="showInstallPopup" class="install-popup">
       <div class="install-popup-content">
         <p>Do you want to install this app?</p>
-        <button @click="installApp">Install</button>
-        <button @click="dismissInstall">Dismiss</button>
+        <button class="btn btn-outline-dark" @click="installApp">Install</button>
+        <button class="btn btn-outline-dark" @click="dismissInstall">Dismiss</button>
       </div>
     </div>
     <div class="d-flex gap-3 align-items-center my-3">
@@ -13,19 +13,31 @@
       <router-link to="/registration" class="btn btn-primary">Register</router-link>
     </div>
     <button class="btn btn-primary" @click="getNoti">Push Data to Api</button>
+    <GeoLocation v-if="!locationPermissionGranted" />
+    <div class="container my-5 py-3">
+      <h5 v-if="userLocation">
+        User Coordinate: {{ userLocation.latitude }}, {{ userLocation.longitude }}
+      </h5>
+    </div>
   </div>
 </template>
 
 <script>
+import GeoLocation from "@/components/GeoLocation.vue";
 import axios from 'axios';
 export default {
   name: "HomeView",
+  components: {
+    GeoLocation,
+  },
   data() {
     return {
       deferredPrompt: null,
       showInstallButton: false,
       showInstallPopup: false,
       users: null,
+      responseData: null,
+      userLocation: null,
     };
   },
   created() {
@@ -47,9 +59,47 @@ export default {
           console.error(error)
         })
     }
-    this.subscribeForNotifications()
+    this.subscribeForNotifications();
+    const geoPrompt = this.$refs.geoPrompt;
+    if (geoPrompt && !geoPrompt.isLocationPermissionGranted) {
+      geoPrompt.openLocationPopup();
+    }
+    this.getUserLocation();
   },
   methods: {
+    getUserLocation() {
+      if (navigator.permissions) {
+        navigator.permissions.query({ name: "geolocation" }).then((result) => {
+          if (result.state === "granted") {
+            navigator.geolocation.getCurrentPosition(
+              (position) => {
+                const { latitude, longitude } = position.coords;
+                this.userLocation = { latitude, longitude };
+                console.log("User Location:", this.userLocation); // Add this line for debugging
+                this.showLocationPopup = false;
+                this.$emit("geolocationAllowed", this.userLocation);
+              },
+              (error) => {
+                console.error(`Error getting location: ${error.message}`);
+                this.showLocationPopup = false;
+              },
+              {
+                enableHighAccuracy: true,
+                timeout: 5000,
+                maximumAge: 0,
+              }
+            );
+          } else {
+            console.error("Geolocation permission not granted.");
+            this.showLocationPopup = false;
+            this.$emit("geolocationDenied");
+          }
+        });
+      } else {
+        console.error("Geolocation is not supported by your browser");
+        this.showLocationPopup = false;
+      }
+    },
     handleInstallPrompt(event) {
       // Prevent the default behavior to show the browser's install prompt
       event.preventDefault();
@@ -111,17 +161,6 @@ export default {
         console.warn('Push notifications are not supported in this browser.');
       }
     },
-    // storePushSubscription(pushSubscription) {
-    //   // Implement your logic to store the pushSubscription data
-    //   // For example, send it to your server
-    //   const { keys, endpoint } = pushSubscription.toJSON();
-    //   // Store the keys in localStorage
-    //   localStorage.setItem('p256dhKey', keys.p256dh);
-    //   localStorage.setItem('authKey', keys.auth);
-    //   localStorage.setItem('endpoint', endpoint)
-    //   console.log('Stored p256dhKey in localStorage:', keys.p256dh);
-    //   console.log('Stored authKey in localStorage:', keys.auth);
-    // },
     getNoti() {
       const token = localStorage.getItem('token');
       const keys = {
@@ -142,7 +181,7 @@ export default {
         .catch((error) => {
           console.error('error sending data', error);
         });
-    }
+    },
   }
 };
 </script>
@@ -151,10 +190,12 @@ export default {
    top: 50%;
    left: 50%;
    transform: translate(-50%, -50%);
-   background: #fff;
+   background: #e14e5f;
    padding: 20px;
    border: 1px solid #ccc;
+   border-radius: 8px;
    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+   animation: slideIn 0.5s ease-in-out
  }
 
  .install-popup-content {
@@ -165,5 +206,17 @@ export default {
    margin: 10px;
    padding: 8px 16px;
    cursor: pointer;
+ }
+
+ @keyframes slideIn {
+   from {
+     transform: translate(-50%, -70%);
+     opacity: 0;
+   }
+
+   to {
+     transform: translate(-50%, -50%);
+     opacity: 1;
+   }
  }
 </style>
