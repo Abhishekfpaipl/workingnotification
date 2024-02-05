@@ -1,19 +1,24 @@
 <template>
   <div class="d-flex flex-column justify-content-center align-items-center mt-5">
     <h1>Version 1.0</h1>
-    <div v-if="showInstallPopup" class="install-popup">
+
+    <div v-if="currentStep === 'installPopup'" class="install-popup">
       <div class="install-popup-content">
         <p>Do you want to install this app?</p>
         <button class="btn btn-outline-dark" @click="installApp">Install</button>
         <button class="btn btn-outline-dark" @click="dismissInstall">Dismiss</button>
       </div>
     </div>
+
+    <GeoLocation v-if="currentStep === 'geoLocation'" />
+
     <div class="d-flex gap-3 align-items-center my-3">
       <router-link to="/login" class="btn btn-primary">Login</router-link>
       <router-link to="/registration" class="btn btn-primary">Register</router-link>
     </div>
+
     <button class="btn btn-primary" @click="getNoti">Push Data to Api</button>
-    <GeoLocation v-if="!locationPermissionGranted" />
+
     <div class="container my-5 py-3">
       <h5 v-if="userLocation">
         User Coordinate: {{ userLocation.latitude }}, {{ userLocation.longitude }}
@@ -38,6 +43,7 @@ export default {
       users: null,
       responseData: null,
       userLocation: null,
+      currentStep: 'installPopup',
     };
   },
   created() {
@@ -50,7 +56,7 @@ export default {
     const token = localStorage.getItem('token');
     if (token) {
       // axios.get('https://pwanew.clobug.co.in/api/user', {
-      axios.get('https://wsgbrand.in/api/user', {
+      axios.get('https://server.wsgbrand.in/api/user', {
         headers: { "Authorization": `Bearer ${token}` }
       }).then((response) => {
         this.users = response.data
@@ -126,12 +132,14 @@ export default {
         }
         // Reset the deferredPrompt
         this.deferredPrompt = null;
-        // Close the install popup
-        this.showInstallPopup = false;
+        // Move to the next step
+        this.currentStep = 'geoLocation';
       });
     },
     dismissInstall() {
       this.showInstallPopup = false;
+      // Move to the next step
+      this.currentStep = 'geoLocation';
     },
     subscribeForNotifications() {
       if ('serviceWorker' in navigator && 'PushManager' in window) {
@@ -175,7 +183,7 @@ export default {
       const config = {
         headers: { "Authorization": `Bearer ${token}` }
       };
-      axios.post('https://wsgbrand.in/api/push_store', data, config)
+      axios.post('https://server.wsgbrand.in/api/push_store', data, config)
         .then((response) => {
           console.log('data sent', response);
         })
