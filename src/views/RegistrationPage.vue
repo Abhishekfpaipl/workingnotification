@@ -74,7 +74,7 @@ export default {
     },
     methods: {
         registerUser() {
-            axios.post('https://pwanew.clobug.co.in/api/register', {
+            axios.post('https://wsgbrand.in/api/register', {
                 name: this.name,
                 email: this.email,
                 password: this.password,

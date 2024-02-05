@@ -51,7 +51,7 @@ export default {
     },
     methods: {
         loginAccount() {
-            axios.post('https://pwanew.clobug.co.in/api/login', {
+            axios.post('https://wsgbrand.in/api/login', {
                 email: this.email,
                 password: this.password
             }).then((response) => {

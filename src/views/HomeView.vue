@@ -49,7 +49,8 @@ export default {
   mounted() {
     const token = localStorage.getItem('token');
     if (token) {
-      axios.get('https://pwanew.clobug.co.in/api/user', {
+      // axios.get('https://pwanew.clobug.co.in/api/user', {
+      axios.get('https://wsgbrand.in/api/user', {
         headers: { "Authorization": `Bearer ${token}` }
       }).then((response) => {
         this.users = response.data
@@ -174,7 +175,7 @@ export default {
       const config = {
         headers: { "Authorization": `Bearer ${token}` }
       };
-      axios.post('https://pwanew.clobug.co.in/api/push_store', data, config)
+      axios.post('https://wsgbrand.in/api/push_store', data, config)
         .then((response) => {
           console.log('data sent', response);
         })
