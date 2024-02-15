@@ -13,6 +13,7 @@
     "bootstrap-icons": "^1.11.3",
     "chart.js": "^4.4.1",
     "core-js": "^3.8.3",
+    "pusher-js": "^8.4.0-rc2",
     "pwa": "^1.9.7",
     "register-service-worker": "^1.7.2",
     "sweetalert2": "^11.10.4",

@@ -30,6 +30,9 @@
 <script>
 import GeoLocation from "@/components/GeoLocation.vue";
 import axios from 'axios';
+import 'sweetalert2/dist/sweetalert2.min.css';
+import Swal from 'sweetalert2';
+import Pusher from 'pusher-js';
 export default {
   name: "HomeView",
   components: {
@@ -53,6 +56,17 @@ export default {
     window.removeEventListener('beforeinstallprompt', this.handleInstallPrompt);
   },
   mounted() {
+
+    const pusher = new Pusher('376226d34fa363ee0c8d', {
+      cluster: 'ap2',
+      debug: true
+    });
+    const channel = pusher.subscribe('Test-channel');
+    channel.bind('Test-event', () => {
+      console.log('hello pusher')
+      this.showSweetAlert()
+    });
+
     const token = localStorage.getItem('token');
     if (token) {
       // axios.get('https://pwanew.clobug.co.in/api/user', {
@@ -60,12 +74,13 @@ export default {
         headers: { "Authorization": `Bearer ${token}` }
       }).then((response) => {
         this.users = response.data
-        console.log(response.data)
+        // console.log(response.data)
       })
         .catch((error) => {
-          console.error(error)
+          alert(error)
         })
     }
+
     this.subscribeForNotifications();
     const geoPrompt = this.$refs.geoPrompt;
     if (geoPrompt && !geoPrompt.isLocationPermissionGranted) {
@@ -74,6 +89,21 @@ export default {
     this.getUserLocation();
   },
   methods: {
+    showSweetAlert(title = 'Yay!', text = 'Order Has been Accepted.') {
+      Swal.fire({
+        title,
+        text,
+        icon: 'success',
+        timer: 2000, // it will auto close the sweetalert
+        showConfirmButton: false, // Hide the "OK" button when timer is set
+        confirmButtonText: 'OK',
+        confirmButtonColor: '#25C297',
+        customClass: {
+          // popup: 'custom-swal-container',
+          // icon: 'custom-swal-icon-color'
+        }
+      });
+    },
     getUserLocation() {
       if (navigator.permissions) {
         navigator.permissions.query({ name: "geolocation" }).then((result) => {
@@ -82,12 +112,12 @@ export default {
               (position) => {
                 const { latitude, longitude } = position.coords;
                 this.userLocation = { latitude, longitude };
-                console.log("User Location:", this.userLocation); // Add this line for debugging
+                // console.log("User Location:", this.userLocation); // Add this line for debugging
                 this.showLocationPopup = false;
                 this.$emit("geolocationAllowed", this.userLocation);
               },
               (error) => {
-                console.error(`Error getting location: ${error.message}`);
+                alert(`Error getting location: ${error.message}`);
                 this.showLocationPopup = false;
               },
               {
@@ -97,13 +127,13 @@ export default {
               }
             );
           } else {
-            console.error("Geolocation permission not granted.");
+            alert("Geolocation permission not granted.");
             this.showLocationPopup = false;
             this.$emit("geolocationDenied");
           }
         });
       } else {
-        console.error("Geolocation is not supported by your browser");
+        alert("Geolocation is not supported by your browser");
         this.showLocationPopup = false;
       }
     },
@@ -126,9 +156,9 @@ export default {
       this.deferredPrompt.userChoice.then((choiceResult) => {
         if (choiceResult.outcome === 'accepted') {
           // Now the app is installed
-          console.log('User accepted the install prompt');
+          // console.log('User accepted the install prompt');
         } else {
-          console.log('User dismissed the install prompt');
+          // console.log('User dismissed the install prompt');
         }
         // Reset the deferredPrompt
         this.deferredPrompt = null;
@@ -147,27 +177,27 @@ export default {
           .then((registration) => {
             const subscribeOptions = {
               userVisibleOnly: true,
-              applicationServerKey: "BHaGoupz6SaaiUM6EOTtsVSVjAklaOV3Y4lmexYmEV7XwDDiA4LkPLfqmvpaF4FcyyHEZ2LvLQUp9sHpuW0K96s"
+              applicationServerKey: " "
             };
             return registration.pushManager.subscribe(subscribeOptions);
           })
           .then((pushSubscription) => {
-            console.log('Received PushSubscription: ', JSON.stringify(pushSubscription));
+            // console.log('Received PushSubscription: ', JSON.stringify(pushSubscription));
             // You can store the pushSubscription data as needed
             const { keys, endpoint } = pushSubscription.toJSON();
             // Store the keys in localStorage
             localStorage.setItem('p256dhKey', keys.p256dh);
             localStorage.setItem('authKey', keys.auth);
             localStorage.setItem('endpoint', endpoint)
-            console.log('Stored p256dhKey in localStorage:', keys.p256dh);
-            console.log('Stored authKey in localStorage:', keys.auth);
+            // console.log('Stored p256dhKey in localStorage:', keys.p256dh);
+            // console.log('Stored authKey in localStorage:', keys.auth);
             // this.storePushSubscription(pushSubscription);
           })
           .catch((error) => {
-            console.error('Error subscribing for notifications:', error);
+            alert('Error subscribing for notifications:', error);
           });
       } else {
-        console.warn('Push notifications are not supported in this browser.');
+        alert('Push notifications are not supported in this browser.');
       }
     },
     getNoti() {
@@ -184,11 +214,11 @@ export default {
         headers: { "Authorization": `Bearer ${token}` }
       };
       axios.post('https://server.wsgbrand.in/api/push_store', data, config)
-        .then((response) => {
-          console.log('data sent', response);
+        .then(() => {
+          // console.log('data sent', response);
         })
-        .catch((error) => {
-          console.error('error sending data', error);
+        .catch(() => {
+          // console.error('error sending data', error);
         });
     },
   }

@@ -55,12 +55,12 @@ export default {
                 email: this.email,
                 password: this.password
             }).then((response) => {
-                console.log('data sent', response)
+                // console.log('data sent', response)
                 const token = response.data.token;
                 localStorage.setItem('token', token);
-                console.log('login succesful token stored', token)
+                // console.log('login succesful token stored', token)
             }).catch((error) => {
-                console.log('error', error)
+                alert('error', error)
             })
         }
     },

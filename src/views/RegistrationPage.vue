@@ -69,12 +69,14 @@ export default {
             name: '',
             email: '',
             password: '',
-            confirmPassword: ''
+            confirmPassword: '',
+            postRoute: 'https://server.wsgbrand.in/api/register'
         }
     },
     methods: {
         registerUser() {
-            axios.post('https://server.wsgbrand.in/api/register', {
+            alert(this.postRoute)
+            axios.post(this.postRoute, {
                 name: this.name,
                 email: this.email,
                 password: this.password,
@@ -84,12 +86,12 @@ export default {
                 this.email = '';
                 this.password = '';
                 this.confirmPassword = '';
-                console.log('data sent', response);
+                // console.log('data sent', response);
                 const token = response.data.token;
                 localStorage.setItem('token', token);
-                console.log('login successful token stored', token);
+                // console.log('login successful token stored', token);
             }).catch((error) => {
-                console.log('error', error)
+                alert('error', error)
             })
         }
     }

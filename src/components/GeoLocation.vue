@@ -44,7 +44,7 @@ export default {
             this.$emit('geolocationAllowed', this.location);
           },
           (error) => {
-            console.error(`Error getting location: ${error.message}`);
+            alert(`Error getting location: ${error.message}`);
             this.showLocationPopup = false;
           },
           {
@@ -54,7 +54,7 @@ export default {
           }
         );
       } else {
-        console.error('Geolocation is not supported by your browser');
+        alert('Geolocation is not supported by your browser');
         this.showLocationPopup = false;
       }
     },
@@ -68,7 +68,7 @@ export default {
           }
         });
       } else {
-        console.error('Geolocation is not supported by your browser');
+        alert('Geolocation is not supported by your browser');
         this.showLocationPopup = false;
       }
     },
